@@ -321,6 +321,10 @@ pub enum BinaryOperator {
     /// `~=` Same as? (PostgreSQL/Redshift geometric operator)
     /// See <https://www.postgresql.org/docs/9.5/functions-geometry.html>
     TildeEq,
+    /// `IS DISTINCT FROM`
+    IsDistinctFrom,
+    /// `IS NOT DISTINCT FROM`
+    IsNotDistinctFrom,
 }
 
 impl fmt::Display for BinaryOperator {
@@ -394,6 +398,8 @@ impl fmt::Display for BinaryOperator {
             BinaryOperator::QuestionDoublePipe => f.write_str("?||"),
             BinaryOperator::At => f.write_str("@"),
             BinaryOperator::TildeEq => f.write_str("~="),
+            BinaryOperator::IsDistinctFrom => f.write_str("IS DISTINCT FROM"),
+            BinaryOperator::IsNotDistinctFrom => f.write_str("IS NOT DISTINCT FROM"),
         }
     }
 }
