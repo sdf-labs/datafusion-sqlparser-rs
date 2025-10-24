@@ -329,6 +329,10 @@ pub enum BinaryOperator {
     /// ':=' Assignment Operator
     /// See <https://dev.mysql.com/doc/refman/8.4/en/assignment-operators.html#operator_assign-value>
     Assignment,
+    /// `IS DISTINCT FROM`
+    IsDistinctFrom,
+    /// `IS NOT DISTINCT FROM`
+    IsNotDistinctFrom,
 }
 
 impl fmt::Display for BinaryOperator {
@@ -405,6 +409,8 @@ impl fmt::Display for BinaryOperator {
             BinaryOperator::At => f.write_str("@"),
             BinaryOperator::TildeEq => f.write_str("~="),
             BinaryOperator::Assignment => f.write_str(":="),
+            BinaryOperator::IsDistinctFrom => f.write_str("IS DISTINCT FROM"),
+            BinaryOperator::IsNotDistinctFrom => f.write_str("IS NOT DISTINCT FROM"),
         }
     }
 }
