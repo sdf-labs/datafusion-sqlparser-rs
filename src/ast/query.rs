@@ -1705,6 +1705,29 @@ pub enum TableFactor {
         /// The alias for the table
         alias: Option<TableAlias>,
     },
+    /// A `VALUES` list used as a table factor.
+    ///
+    /// ```sql
+    /// SELECT * FROM VALUES (1, 'a'), (2, 'b') AS t(x, y);
+    /// ```
+    Values {
+        /// The rows of the `VALUES` list
+        rows: Vec<ExprRow>,
+        /// The alias for the table
+        alias: Option<TableAlias>,
+    },
+}
+
+/// A single parenthesized row of expressions, e.g. `(1, 'a')`.
+#[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+pub struct ExprRow(pub Vec<Expr>);
+
+impl fmt::Display for ExprRow {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "({})", display_comma_separated(&self.0))
+    }
 }
 
 /// The table sample modifier options
@@ -2482,6 +2505,13 @@ impl fmt::Display for TableFactor {
                     write!(f, " {alias}")?;
                 }
 
+                Ok(())
+            }
+            TableFactor::Values { rows, alias } => {
+                write!(f, "VALUES {}", display_comma_separated(rows))?;
+                if let Some(alias) = alias {
+                    write!(f, " AS {alias}")?;
+                }
                 Ok(())
             }
         }

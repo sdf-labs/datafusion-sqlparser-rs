@@ -17,9 +17,10 @@
 
 use crate::{
     ast::{
-        ddl::AlterSchema, query::SelectItemQualifiedWildcardKind, AlterSchemaOperation, AlterTable,
-        ColumnOptions, CreateOperator, CreateOperatorClass, CreateOperatorFamily, CreateView,
-        ExportData, Owner, TypedString,
+        ddl::AlterSchema,
+        query::{ExprRow, SelectItemQualifiedWildcardKind},
+        AlterSchemaOperation, AlterTable, ColumnOptions, CreateOperator, CreateOperatorClass,
+        CreateOperatorFamily, CreateView, ExportData, Owner, TypedString,
     },
     tokenizer::TokenWithSpan,
 };
@@ -2028,6 +2029,8 @@ impl Spanned for TableFactor {
                     .chain(alias.as_ref().map(|a| a.span())),
             ),
             TableFactor::OpenJsonTable { .. } => Span::empty(),
+            TableFactor::Values { rows, alias } => union_spans(rows.iter().map(|i| i.span()))
+                .union_opt(&alias.as_ref().map(|i| i.span())),
         }
     }
 }
@@ -2531,6 +2534,12 @@ impl Spanned for OutputClause {
 impl Spanned for comments::CommentWithSpan {
     fn span(&self) -> Span {
         self.span
+    }
+}
+
+impl Spanned for ExprRow {
+    fn span(&self) -> Span {
+        union_spans(self.0.iter().map(|i| i.span()))
     }
 }
 
