@@ -1409,6 +1409,21 @@ pub enum TableFactor {
         /// The alias for the table.
         alias: Option<TableAlias>,
     },
+    Values {
+        rows: Vec<ExprRow>,
+        alias: Option<TableAlias>,
+    },
+}
+
+#[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+pub struct ExprRow(pub Vec<Expr>);
+
+impl fmt::Display for ExprRow {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "({})", display_comma_separated(&self.0))
+    }
 }
 
 /// The table sample modifier options
@@ -2101,6 +2116,13 @@ impl fmt::Display for TableFactor {
                     "{row_expression}{passing} COLUMNS {columns})",
                     columns = display_comma_separated(columns)
                 )?;
+                if let Some(alias) = alias {
+                    write!(f, " AS {alias}")?;
+                }
+                Ok(())
+            }
+            TableFactor::Values { rows, alias } => {
+                write!(f, "VALUES {}", display_comma_separated(rows))?;
                 if let Some(alias) = alias {
                     write!(f, " AS {alias}")?;
                 }

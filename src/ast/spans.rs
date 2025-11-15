@@ -15,7 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::ast::{query::SelectItemQualifiedWildcardKind, ColumnOptions};
+use crate::ast::{
+    query::{ExprRow, SelectItemQualifiedWildcardKind},
+    ColumnOptions,
+};
 use core::iter;
 
 use crate::tokenizer::Span;
@@ -2010,6 +2013,8 @@ impl Spanned for TableFactor {
                     .chain(alias.as_ref().map(|i| i.span())),
             ),
             TableFactor::OpenJsonTable { .. } => Span::empty(),
+            TableFactor::Values { rows, alias } => union_spans(rows.iter().map(|i| i.span()))
+                .union_opt(&alias.as_ref().map(|i| i.span())),
         }
     }
 }
@@ -2354,6 +2359,12 @@ impl Spanned for OpenStatement {
     fn span(&self) -> Span {
         let OpenStatement { cursor_name } = self;
         cursor_name.span
+    }
+}
+
+impl Spanned for ExprRow {
+    fn span(&self) -> Span {
+        union_spans(self.0.iter().map(|i| i.span()))
     }
 }
 
