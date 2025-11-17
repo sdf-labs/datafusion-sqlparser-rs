@@ -1446,14 +1446,14 @@ impl fmt::Display for Expr {
                 }
                 Ok(())
             }
-            Expr::IsTrue(ast) => write!(f, "{ast} IS TRUE"),
-            Expr::IsNotTrue(ast) => write!(f, "{ast} IS NOT TRUE"),
-            Expr::IsFalse(ast) => write!(f, "{ast} IS FALSE"),
-            Expr::IsNotFalse(ast) => write!(f, "{ast} IS NOT FALSE"),
-            Expr::IsNull(ast) => write!(f, "{ast} IS NULL"),
-            Expr::IsNotNull(ast) => write!(f, "{ast} IS NOT NULL"),
-            Expr::IsUnknown(ast) => write!(f, "{ast} IS UNKNOWN"),
-            Expr::IsNotUnknown(ast) => write!(f, "{ast} IS NOT UNKNOWN"),
+            Expr::IsTrue(ast) => write!(f, "({ast}) IS TRUE"),
+            Expr::IsNotTrue(ast) => write!(f, "({ast}) IS NOT TRUE"),
+            Expr::IsFalse(ast) => write!(f, "({ast}) IS FALSE"),
+            Expr::IsNotFalse(ast) => write!(f, "({ast}) IS NOT FALSE"),
+            Expr::IsNull(ast) => write!(f, "({ast}) IS NULL"),
+            Expr::IsNotNull(ast) => write!(f, "({ast}) IS NOT NULL"),
+            Expr::IsUnknown(ast) => write!(f, "({ast}) IS UNKNOWN"),
+            Expr::IsNotUnknown(ast) => write!(f, "({ast}) IS NOT UNKNOWN"),
             Expr::InList {
                 expr,
                 list,
